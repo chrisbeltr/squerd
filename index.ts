@@ -1,5 +1,5 @@
-const { Client, Events, GatewayIntentBits } = require("discord.js");
-require("dotenv").config();
+import "dotenv/config";
+import { Client, Events, GatewayIntentBits } from "discord.js";
 
 const client = new Client({
   intents: [
@@ -10,8 +10,8 @@ const client = new Client({
   ],
 });
 
-client.once(Events.ClientReady, (readyClient) => {
-  console.log(`Bot ${readyClient.user.tag} loggged in.`);
+client.once(Events.ClientReady, (readyClient: Client) => {
+  console.log(`Bot ${readyClient.user!.tag} loggged in.`);
 });
 
 client.login(process.env.TOKEN);
