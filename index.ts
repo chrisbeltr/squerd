@@ -1,7 +1,12 @@
 import "dotenv/config";
 import { Client } from "discordx";
 import { importx, dirname } from "@discordx/importer";
-import { Events, GatewayIntentBits } from "discord.js";
+import {
+  Events,
+  GatewayIntentBits,
+  PermissionFlagsBits,
+  TextChannel,
+} from "discord.js";
 
 const client = new Client({
   intents: [
@@ -22,6 +27,42 @@ client.once(Events.ClientReady, async () => {
   await client.clearApplicationCommands();
 
   await client.initApplicationCommands();
+  console.log("All commands initialized.");
+});
+
+client.on(Events.VoiceStateUpdate, async (oldState, newState) => {
+  let logChannel = (await oldState.guild.channels.fetch(
+    process.env.LOG_CHANNEL!,
+  )) as TextChannel;
+  let pingRole = await oldState.guild.roles.fetch(process.env.PING_ROLE!);
+  let vcRole = await oldState.guild.roles.fetch(process.env.VC_ROLE!);
+  if (
+    newState.channel != null &&
+    (oldState.channel == null ||
+      !oldState.channel
+        .permissionsFor(oldState.guild.roles.everyone)
+        .has(PermissionFlagsBits.ViewChannel)) &&
+    newState.channel
+      .permissionsFor(newState.guild.roles.everyone)
+      .has(PermissionFlagsBits.ViewChannel)
+  ) {
+    logChannel.send(
+      `${pingRole} - \`${newState.member?.displayName}\` has joined \`${newState.channel.name}\`!`,
+    );
+    oldState.member?.roles.add(vcRole!);
+  } else if (
+    oldState.channel != null &&
+    (newState.channel == null ||
+      !newState.channel
+        .permissionsFor(newState.guild.roles.everyone)
+        .has(PermissionFlagsBits.ViewChannel)) &&
+    oldState.channel
+      .permissionsFor(oldState.guild.roles.everyone)
+      .has(PermissionFlagsBits.ViewChannel)
+  ) {
+    logChannel.send(`\`${oldState.member?.displayName}\` has disconnected.`);
+    oldState.member?.roles.remove(vcRole!);
+  }
 });
 
 client.on(Events.InteractionCreate, (interaction) => {
@@ -29,7 +70,5 @@ client.on(Events.InteractionCreate, (interaction) => {
 });
 
 importx(`${dirname(import.meta.url)}/commands/**.js`).then(() => {
-  console.log("All commands imported");
-
   client.login(process.env.TOKEN!);
 });

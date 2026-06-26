@@ -7,14 +7,14 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-import { ApplicationCommandOptionType, ApplicationCommandType, GuildMember, MessageContextMenuCommandInteraction, MessageFlags, TextChannel, } from "discord.js";
-import { ContextMenu, Discord, Slash, SlashChoice, SlashOption, } from "discordx";
+import { ApplicationCommandOptionType, ApplicationCommandType, MessageContextMenuCommandInteraction, MessageFlags, TextChannel, } from "discord.js";
+import { ContextMenu, Discord, Slash, SlashOption } from "discordx";
 let Quote = class Quote {
     async quote(input, author, interaction) {
         let ch = (await interaction.guild?.channels.fetch(process.env.QUOTES_CHANNEL));
         await ch.send(`${input}\n\\- ${author}, <t:${Math.floor(interaction.createdAt.getTime() / 1000)}>`);
         await interaction.reply({
-            content: "ok great i gotcha",
+            content: "added quote to quotes channel!",
             flags: MessageFlags.Ephemeral,
         });
     }
@@ -23,7 +23,7 @@ let Quote = class Quote {
         let member = await interaction.guild?.members.fetch(interaction.targetMessage.author.id);
         await ch.send(`${interaction.targetMessage.content}\n\\- ${member?.displayName}, <t:${Math.floor(interaction.targetMessage.createdTimestamp / 1000)}>`);
         await interaction.reply({
-            content: `pleaseeeeeeeee`,
+            content: `added quote to quotes channel!`,
             flags: MessageFlags.Ephemeral,
         });
     }
