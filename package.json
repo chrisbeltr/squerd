@@ -13,12 +13,17 @@
   "license": "ISC",
   "author": "",
   "type": "module",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "compile": "npx tsc",
+    "start": "npm run compile && node index.js",
+    "prod": "export NODE_ENV=\"PROD\" && npm run start",
+    "dev": "export NODE_ENV=\"DEV\" && npm run start"
   },
   "dependencies": {
+    "@discordx/importer": "^1.3.3",
     "discord.js": "^14.26.4",
+    "discordx": "^11.13.3",
     "dotenv": "^17.4.2"
   },
   "devDependencies": {
