@@ -25,7 +25,7 @@ const client = new Client({
   botGuilds:
     process.env.NODE_ENV == "DEV"
       ? ["377921394631114753", "895723035624095795"]
-      : [],
+      : ["728488981825847308"],
 });
 
 client.once(Events.ClientReady, async () => {
