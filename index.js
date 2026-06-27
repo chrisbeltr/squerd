@@ -1,12 +1,15 @@
 import "dotenv/config";
+import { RE2 } from "re2";
 import { Client } from "discordx";
 import { importx, dirname } from "@discordx/importer";
 import { Events, GatewayIntentBits, PermissionFlagsBits, TextChannel, } from "discord.js";
+let link = new RE2("https?:\/\/(((www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,})|([0-9]{1,3}(\.[0-9]{1,3}){3}))(:[0-9]{1,5})?(\/[-a-zA-Z0-9@%_+~#?&\/= ]*)*", "im");
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
         GatewayIntentBits.GuildMembers,
         GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.MessageContent,
         GatewayIntentBits.GuildVoiceStates,
     ],
     botGuilds: process.env.NODE_ENV == "DEV"
@@ -44,6 +47,24 @@ client.on(Events.VoiceStateUpdate, async (oldState, newState) => {
             .has(PermissionFlagsBits.ViewChannel)) {
         logChannel.send(`\`${oldState.member?.displayName}\` has disconnected.`);
         oldState.member?.roles.remove(vcRole);
+    }
+});
+client.on(Events.MessageCreate, async (message) => {
+    if (!message.author.bot) {
+        // if in the-mood
+        if (message.channel.id == process.env.MOOD_CHANNEL) {
+            // is it a link || does it have an attachment || is it me <3
+            console.log(link.test(message.content));
+            if (!(link.test(message.content) ||
+                message.attachments.size > 0 ||
+                message.author.id == process.env.ME)) {
+                let logChannel = (await message.guild?.channels.fetch(process.env.MOOD_LOG_CHANNEL));
+                await logChannel.send(`${message.member?.displayName} tried to send this: ${message.content}`);
+                await message.delete();
+                let warning = await message.channel.send("no typing in the mood asshole");
+                setTimeout(() => warning.delete(), 5000);
+            }
+        }
     }
 });
 client.on(Events.InteractionCreate, (interaction) => {
