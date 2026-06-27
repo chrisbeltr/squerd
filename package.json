@@ -17,7 +17,7 @@
   "scripts": {
     "compile": "npx tsc",
     "start": "npm run compile && node index.js",
-    "prod": "export NODE_ENV=\"PROD\" && npm run start",
+    "prod": "export NODE_ENV=\"PROD\" && node index.js",
     "dev": "export NODE_ENV=\"DEV\" && npm run start"
   },
   "dependencies": {

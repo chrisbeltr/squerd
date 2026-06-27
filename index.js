@@ -51,10 +51,7 @@ client.on(Events.VoiceStateUpdate, async (oldState, newState) => {
 });
 client.on(Events.MessageCreate, async (message) => {
     if (!message.author.bot) {
-        // if in the-mood
         if (message.channel.id == process.env.MOOD_CHANNEL) {
-            // is it a link || does it have an attachment || is it me <3
-            console.log(link.test(message.content));
             if (!(link.test(message.content) ||
                 message.attachments.size > 0 ||
                 message.author.id == process.env.ME)) {
