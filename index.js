@@ -2,7 +2,7 @@ import "dotenv/config";
 import { RE2 } from "re2";
 import { Client } from "discordx";
 import { importx, dirname } from "@discordx/importer";
-import { Events, GatewayIntentBits, PermissionFlagsBits, TextChannel, } from "discord.js";
+import { ActivityType, Events, GatewayIntentBits, PermissionFlagsBits, TextChannel, } from "discord.js";
 let link = new RE2("https?:\/\/(((www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,})|([0-9]{1,3}(\.[0-9]{1,3}){3}))(:[0-9]{1,5})?(\/[-a-zA-Z0-9@%_+~#?&\/= ]*)*", "im");
 const client = new Client({
     intents: [
@@ -18,6 +18,10 @@ const client = new Client({
 });
 client.once(Events.ClientReady, async () => {
     console.log(`Client "${client.user?.tag}" is connected.`);
+    client.user?.setPresence({
+        activities: [{ type: ActivityType.Playing, name: "with ur mom" }],
+        status: "dnd",
+    });
     await client.clearApplicationCommands();
     await client.initApplicationCommands();
     console.log("All commands initialized.");

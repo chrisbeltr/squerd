@@ -3,6 +3,7 @@ import { RE2 } from "re2";
 import { Client } from "discordx";
 import { importx, dirname } from "@discordx/importer";
 import {
+  ActivityType,
   Events,
   GatewayIntentBits,
   PermissionFlagsBits,
@@ -30,6 +31,11 @@ const client = new Client({
 
 client.once(Events.ClientReady, async () => {
   console.log(`Client "${client.user?.tag}" is connected.`);
+
+  client.user?.setPresence({
+    activities: [{ type: ActivityType.Playing, name: "with ur mom" }],
+    status: "dnd",
+  });
 
   await client.clearApplicationCommands();
 
