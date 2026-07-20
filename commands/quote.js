@@ -10,9 +10,16 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 import { ApplicationCommandOptionType, ApplicationCommandType, MessageContextMenuCommandInteraction, MessageFlags, TextChannel, } from "discord.js";
 import { ContextMenu, Discord, Slash, SlashOption } from "discordx";
 let Quote = class Quote {
-    async quote(input, author, interaction) {
+    async quote(input, author, input2, author2, input3, author3, interaction) {
         let ch = (await interaction.guild?.channels.fetch(process.env.QUOTES_CHANNEL));
-        await ch.send(`${input}\n\\- ${author}, <t:${Math.floor(interaction.createdAt.getTime() / 1000)}>`);
+        let final_quote = "";
+        final_quote += `${input} - ${author}`;
+        if (input2 && author2)
+            final_quote += `\n${input2} - ${author2}`;
+        if (input3 && author3)
+            final_quote += `\n${input3} - ${author3}`;
+        final_quote += `, <t:${Math.floor(interaction.createdAt.getTime() / 1000)}>`;
+        await ch.send(final_quote);
         await interaction.reply({
             content: "added quote to quotes channel!",
             flags: MessageFlags.Ephemeral,
@@ -40,6 +47,30 @@ __decorate([
         name: "author",
         description: "who said it?",
         required: true,
+        type: ApplicationCommandOptionType.String,
+    })),
+    __param(2, SlashOption({
+        name: "second_quote",
+        description: "what did they say?",
+        required: false,
+        type: ApplicationCommandOptionType.String,
+    })),
+    __param(3, SlashOption({
+        name: "second_author",
+        description: "who said it?",
+        required: false,
+        type: ApplicationCommandOptionType.String,
+    })),
+    __param(4, SlashOption({
+        name: "third_quote",
+        description: "what did they say?",
+        required: false,
+        type: ApplicationCommandOptionType.String,
+    })),
+    __param(5, SlashOption({
+        name: "third_author",
+        description: "who said it?",
+        required: false,
         type: ApplicationCommandOptionType.String,
     }))
 ], Quote.prototype, "quote", null);
